@@ -1,7 +1,7 @@
-module commandr.completion.bash;
+module commandr_plus.completion.bash;
 
-import commandr.program;
-import commandr.option;
+import commandr_plus.program;
+import commandr_plus.option;
 import std.algorithm : map, filter;
 import std.array : Appender, join;
 import std.string : format;
@@ -25,7 +25,7 @@ import std.range : empty, chain;
  * ---
  * import std.file : write;
  * import std.string : format;
- * import commandr;
+ * import commandr_plus;
  *
  * auto prog = new Program("test");
  * std.file.write("%s.bash".format(prog.binaryName), createBashCompletionScript(prog));

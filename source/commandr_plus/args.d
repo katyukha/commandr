@@ -41,9 +41,9 @@
  * See_Also:
  *  ProgramArgs
  */
-module commandr.args;
+module commandr_plus.args;
 
-import commandr.program;
+import commandr_plus.program;
 
 
 /**

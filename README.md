@@ -1,10 +1,10 @@
 <!-- LOGO -->
 <p align="center">
-  <a href="https://github.com/robik/commandr">
+  <a href="https://github.com/katyukha/commandr-plus">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h2 align="center">commandr</h2>
+  <h2 align="center">commandr-plus</h2>
 
   <p align="center">
     A modern, powerful commmand line argument parser. 
@@ -12,16 +12,15 @@
     Batteries included.
     <br />
     <br />
-    <!-- <a href="https://robik.github.io/commandr/"><strong>📗 Explore the docs »</strong></a> -->
     <br />
-    <a href="https://github.com/robik/commandr/issues">❗️ Report a bug</a>
+    <a href="https://github.com/katyukha/commandr-plus/issues">❗️ Report a bug</a>
     ·
-    <a href="https://github.com/robik/commandr/issues">💡 Request feature</a>    
+    <a href="https://github.com/katyukha/commandr-plus/issues">💡 Request feature</a>    
     <br />  
     <br />
-    <img src="https://img.shields.io/dub/v/commandr?style=flat-square">
-    <img src="https://img.shields.io/github/issues/robik/commandr.svg?style=flat-square">
-    <img src="https://img.shields.io/github/license/robik/commandr.svg?style=flat-square">
+    <img src="https://img.shields.io/dub/v/commandr-plus?style=flat-square">
+    <img src="https://img.shields.io/github/issues/katyukha/commandr-plus.svg?style=flat-square">
+    <img src="https://img.shields.io/github/license/katyukha/commandr-plus.svg?style=flat-square">
     <img src="https://img.shields.io/badge/language-D-red?style=flat-square">
     <br />
   </p>
@@ -29,7 +28,7 @@
 
 - - -
 
-**commandr** handles all kinds of command-line arguments with a nice and clean interface.<br/>
+**commandr-plus** handles all kinds of command-line arguments with a nice and clean interface.<br/>
 Comes with help generation, shell auto-complete scripts and validation. 
 
 
@@ -67,7 +66,7 @@ Add this entry to your `dub.json` file:
 ```json
   "dependencies": {
     ...
-    "commandr": "~>0.1"
+    "commandr-plus": "~>2.0"
     ...
   }
 ```
@@ -122,7 +121,7 @@ Add this entry to your `dub.json` file:
    - You can categorize commands for better help output
 
  - **Consistency checking**
-   - When you build your program model, `commandr` checks its consistency.
+   - When you build your program model, `commandr-plus` checks its consistency.
    - Detects name duplications as well as short/long options.
    - Detects required parameters with default value.
 
@@ -149,7 +148,7 @@ Simple example showing how to create a basic program and parse arguments:
 
 ```D
 import std.stdio;
-import commandr;
+import commandr_plus;
 
 void main(string[] args) {
     auto a = new Program("test", "1.0")
@@ -278,11 +277,11 @@ program.printHelp(helpOptions);
 
 ### Bash autocompletion
 
-Commandr can generate BASH autocompletion script. During installation of your program you can save the generated script to `/etc/bash_completion.d/<programname>.bash` (or any other path depending on distro).
+commandr-plus can generate BASH autocompletion script. During installation of your program you can save the generated script to `/etc/bash_completion.d/<programname>.bash` (or any other path depending on distro).
 
 ```D
-import commandr;
-import commandr.completion.bash;
+import commandr_plus;
+import commandr_plus.completion.bash;
 
 string script = program.createBashCompletionScript();
 // save script to file
@@ -362,4 +361,4 @@ Current major missing features are:
  - Combined short flags/options (e.g. `-qLob`)
  - EnumValidator/FileSystemValidator auto-completion hinting
 
-See the [open issues](https://github.com/robik/commandr/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/katyukha/commandr-plus/issues) for a list of proposed features (and known issues).

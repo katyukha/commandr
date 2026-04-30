@@ -47,10 +47,10 @@
  * See_Also:
  *  IValidator, ValidationException
  */
-module commandr.validators;
+module commandr_plus.validators;
 
-import commandr.option : IEntry, InvalidArgumentsException;
-import commandr.utils : getEntryKindName, matchingCandidate;
+import commandr_plus.option : IEntry, InvalidArgumentsException;
+import commandr_plus.utils : getEntryKindName, matchingCandidate;
 import std.algorithm : canFind, any, each;
 import std.array : join;
 import std.string : format;
@@ -495,9 +495,9 @@ public T validateEachWith(T: IEntry)(T entry, bool delegate(string) validator, s
 
 // enum
 unittest {
-    import commandr.program;
-    import commandr.option;
-    import commandr.parser;
+    import commandr_plus.program;
+    import commandr_plus.option;
+    import commandr_plus.parser;
     import std.exception : assertThrown, assertNotThrown;
 
     assertNotThrown!ValidationException(
@@ -546,9 +546,9 @@ unittest {
 
 // delegate
 unittest {
-    import commandr.program;
-    import commandr.option;
-    import commandr.parser;
+    import commandr_plus.program;
+    import commandr_plus.option;
+    import commandr_plus.parser;
     import std.exception : assertThrown, assertNotThrown;
     import std.string : isNumeric;
 

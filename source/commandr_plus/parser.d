@@ -4,13 +4,13 @@
  * See_Also:
  *  parse, parseArgs
  */
-module commandr.parser;
+module commandr_plus.parser;
 
-import commandr.program;
-import commandr.option;
-import commandr.args;
-import commandr.help;
-import commandr.utils;
+import commandr_plus.program;
+import commandr_plus.option;
+import commandr_plus.args;
+import commandr_plus.help;
+import commandr_plus.utils;
 
 import std.algorithm : canFind, count, each;
 import std.stdio : writeln, writefln, stderr;

@@ -27,10 +27,10 @@
  * See_Also:
  *   `Command`, `Program`, `parse`
  */
-module commandr.program;
+module commandr_plus.program;
 
-import commandr.option;
-import commandr.utils;
+import commandr_plus.option;
+import commandr_plus.utils;
 import std.algorithm : all, reverse, map, filter;
 import std.ascii : isAlphaNum;
 import std.array : array;
@@ -795,7 +795,7 @@ unittest {
 // flags
 unittest {
     import std.exception : assertThrown;
-    import commandr.validators;
+    import commandr_plus.validators;
 
     assertThrown!InvalidProgramException(
         new Program("test")
@@ -819,7 +819,7 @@ unittest {
 // default command
 unittest {
     import std.exception : assertThrown, assertNotThrown;
-    import commandr.validators;
+    import commandr_plus.validators;
 
     assertThrown!InvalidProgramException(
         new Program("test")
@@ -843,7 +843,7 @@ unittest {
 // topics
 unittest {
     import std.exception : assertThrown, assertNotThrown;
-    import commandr.validators;
+    import commandr_plus.validators;
 
     auto p = new Program("test")
             .add(new Command("a", "desc"))

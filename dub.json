@@ -1,9 +1,10 @@
 {
-	"name": "commandr",
+	"name": "commandr-plus",
 	"authors": [
+		"Dmytro Katyukha",
 		"Robert Pasiński"
 	],
-	"description": "Modern command line argument parser",
-	"copyright": "Copyright © 2019-2024, Robert Pasiński",
+	"description": "Modern command line argument parser (enhanced fork of commandr)",
+	"copyright": "Copyright © 2019-2026, Robert Pasiński, Dmytro Katyukha",
 	"license": "MIT"
 }

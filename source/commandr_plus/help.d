@@ -1,7 +1,7 @@
-module commandr.help;
+module commandr_plus.help;
 
-import commandr.program;
-import commandr.option;
+import commandr_plus.program;
+import commandr_plus.option;
 import std.algorithm : filter, map, any, chunkBy, sort;
 import std.array : join, array;
 import std.conv : to;

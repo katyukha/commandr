@@ -1,6 +1,6 @@
-module commandr.utils;
+module commandr_plus.utils;
 
-import commandr;
+import commandr_plus;
 import std.array : array;
 import std.algorithm : find, map, levenshteinDistance;
 import std.typecons : Tuple, Nullable;
