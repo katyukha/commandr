@@ -65,8 +65,13 @@ public ProgramArgs parse(Program program, ref string[] args, HelpOutput helpConf
  *   `parse`, `Command.execute`
  */
 public int run(Program program, ref string[] args, HelpOutput helpConfig = HelpOutput.init) {
+    import commandr_plus.program : ExitException;
     auto pargs = parse(program, args, helpConfig);
-    return program.execute(pargs);
+    try {
+        return program.execute(pargs);
+    } catch (ExitException e) {
+        return e.code;
+    }
 }
 
 
@@ -677,4 +682,44 @@ unittest {
     auto program2 = new Program("test2").add(new Command("bare"));
     auto args3 = ["test2", "bare"];
     assertThrown!CommandNotImplementedException(program2.run(args3));
+}
+
+// ExitException / exitWith
+unittest {
+    import std.exception : assertThrown;
+    import commandr_plus.program : ExitException, exitWith;
+
+    class EarlyExitCmd : Command {
+        this() { super("cmd", ""); }
+        override int execute(ProgramArgs args) {
+            exitWith(42);
+            return 0;
+        }
+    }
+
+    auto program = new Program("test").add(new EarlyExitCmd());
+    auto args = ["test", "cmd"];
+    assert(program.run(args) == 42);
+
+    assertThrown!ExitException(exitWith(1));
+}
+
+// setup() hook on Program
+unittest {
+    bool setupCalled = false;
+
+    class MyCmd : Command {
+        this() { super("cmd", ""); }
+        override int execute(ProgramArgs args) { return 7; }
+    }
+
+    class MyProgram : Program {
+        this() { super("test"); this.add(new MyCmd()); }
+        override protected void setup(ProgramArgs args) { setupCalled = true; }
+    }
+
+    auto p = new MyProgram();
+    auto a = ["test", "cmd"];
+    assert(p.run(a) == 7);
+    assert(setupCalled);
 }

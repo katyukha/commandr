@@ -52,6 +52,32 @@ public class InvalidProgramException : Exception {
 }
 
 /**
+ * Thrown to exit the program with a specific exit code.
+ *
+ * Caught by `run()`, which returns the code as its result.
+ * Use the `exitWith` helper to throw it.
+ */
+public class ExitException : Exception {
+    /// Exit code to return from `run()`
+    public int code;
+
+    public this(int code) nothrow pure @safe {
+        super("exit");
+        this.code = code;
+    }
+}
+
+/**
+ * Exits the program with the given exit code.
+ *
+ * Throws `ExitException`, which is caught by `run()`.
+ * Can be called from anywhere inside `execute()`.
+ */
+public noreturn exitWith(int code) pure @safe {
+    throw new ExitException(code);
+}
+
+/**
  * Thrown when a leaf Command subclass does not override execute().
  */
 public class CommandNotImplementedException : Exception {
@@ -581,6 +607,19 @@ public class Program: Command {
      */
     public override string topic() nothrow pure @safe @nogc {
         return _topic;
+    }
+
+    /**
+     * Called by `execute` before dispatching to subcommands.
+     *
+     * Override in a `Program` subclass to perform global initialization
+     * (e.g. configure logging, load config) based on top-level flags/options.
+     */
+    protected void setup(ProgramArgs args) {}
+
+    public override int execute(ProgramArgs args) {
+        setup(args);
+        return super.execute(args);
     }
 }
 

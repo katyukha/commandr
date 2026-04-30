@@ -275,6 +275,52 @@ class CommandBranch : Command {
 
 Leaf commands that do not override `execute` throw `CommandNotImplementedException` at runtime.
 
+**Exiting with a non-zero code** from anywhere inside `execute` (including deeply nested helpers):
+
+```D
+override int execute(ProgramArgs args) {
+    if (!exists(args.arg("path")))
+        exitWith(1);   // throws ExitException, caught by run()
+    // ...
+    return 0;
+}
+```
+
+`exitWith` throws `ExitException`, which `run()` catches and converts to a return value. Any unhandled exception other than `ExitException` propagates normally.
+
+> **Note:** `exitWith` is only automatically handled when using `run()`. In callback style, `ExitException` is not caught and will propagate as an unhandled exception. If you need clean exit codes in callback style, wrap the `.on()` chain manually:
+>
+> ```D
+> int main(string[] args) {
+>     try {
+>         program.parse(args)
+>             .on("cmd", (a) { exitWith(1); });
+>         return 0;
+>     } catch (ExitException e) {
+>         return e.code;
+>     }
+> }
+> ```
+
+**Global initialization** before dispatch — override `setup()` on a `Program` subclass:
+
+```D
+class MyProgram : Program {
+    this() { super("myapp", "1.0"); /* add commands */ }
+
+    override protected void setup(ProgramArgs args) {
+        if (args.flag("verbose"))
+            globalLogLevel = LogLevel.trace;
+    }
+}
+
+int main(string[] args) {
+    return new MyProgram().run(args);
+}
+```
+
+`setup` is called once with the top-level `ProgramArgs` before subcommand dispatch. No need to call `super.setup()`.
+
 The two styles — callback and OOP — are independent. Callback style uses `parse()` + `.on()`; OOP style uses `run()` + `execute()`. They do not interfere with each other.
 
 ### Validation
