@@ -29,7 +29,10 @@
 - - -
 
 **commandr-plus** handles all kinds of command-line arguments with a nice and clean interface.<br/>
-Comes with help generation, shell auto-complete scripts and validation. 
+Comes with help generation, shell auto-complete scripts and validation.
+
+> This is an enhanced fork of [commandr](https://github.com/robik/commandr).
+> It adds OOP-style command dispatch, typed accessors, and other improvements required for apps with large set of CLI commands and options.
 
 
 ## Table of Contents
