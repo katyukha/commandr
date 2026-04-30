@@ -53,6 +53,24 @@ public ProgramArgs parse(Program program, ref string[] args, HelpOutput helpConf
 
 
 /**
+ * Parses and executes the program using OOP-style command dispatch.
+ *
+ * Combines `parse` and `Command.execute`. Intended for programs where
+ * commands are defined as `Command` subclasses that override `execute`.
+ *
+ * Returns:
+ *   Exit code from command execution (0 = success).
+ *
+ * See_Also:
+ *   `parse`, `Command.execute`
+ */
+public int run(Program program, ref string[] args, HelpOutput helpConfig = HelpOutput.init) {
+    auto pargs = parse(program, args, helpConfig);
+    return program.execute(pargs);
+}
+
+
+/**
  * Parses args.
  *
  * Returns instance of `ProgramArgs`, which allows working on parsed data.
@@ -620,4 +638,43 @@ unittest {
     assert(a.command.name == "b");
     assert(a.command.command !is null);
     assert(a.command.command.name == "c");
+}
+
+// OOP-style execute dispatch
+unittest {
+    import std.exception : assertThrown;
+    import commandr_plus.program : CommandNotImplementedException;
+
+    class LeafA : Command {
+        int result = 0;
+        this() { super("a", "leaf a"); }
+        override int execute(ProgramArgs args) { return 11; }
+    }
+
+    class LeafB : Command {
+        this() { super("b", "leaf b"); }
+        override int execute(ProgramArgs args) { return 22; }
+    }
+
+    class GroupCommand : Command {
+        this() {
+            super("group", "a group");
+            this.add(new LeafA());
+            this.add(new LeafB());
+        }
+    }
+
+    auto program = new Program("test")
+        .add(new GroupCommand());
+
+    auto args1 = ["test", "group", "a"];
+    assert(program.run(args1) == 11);
+
+    auto args2 = ["test", "group", "b"];
+    assert(program.run(args2) == 22);
+
+    // leaf without override throws
+    auto program2 = new Program("test2").add(new Command("bare"));
+    auto args3 = ["test2", "bare"];
+    assertThrown!CommandNotImplementedException(program2.run(args3));
 }

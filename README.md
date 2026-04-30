@@ -40,7 +40,8 @@ Comes with help generation, shell auto-complete scripts and validation.
  - [Features](#features)
  - [Getting Started](#getting-started)
    - [Basic usage](#basic-usage)
-   - [Subcommands](#subcommands)
+   - [Subcommands (callback style)](#subcommands-callback-style)
+   - [OOP-style commands](#oop-style-commands)
    - [Validation](#validation)
    - [Printing help](#printing-help)
    - [Bash autocompletion](#bash-autocompletion)
@@ -166,7 +167,7 @@ void main(string[] args) {
 }
 ```
 
-### Subcommands
+### Subcommands (callback style)
 
 You can create subcommands in your program or command using `.add`. You can nest commands.
 
@@ -214,6 +215,67 @@ a.on("branch", (args) {
     });
 });
 ```
+
+### OOP-style commands
+
+For larger programs, you can define each command as a class that extends `Command` and overrides `execute`. Use `program.run(args)` instead of `program.parse(args)` — it parses and dispatches automatically.
+
+```D
+import std.stdio;
+import commandr_plus;
+
+class CommandGreet : Command {
+    this() {
+        super("greet", "Greet someone");
+        this.add(new Argument("name", "Name of person to greet"));
+    }
+
+    override int execute(ProgramArgs args) {
+        writefln("Hello %s!", args.arg("name"));
+        return 0;
+    }
+}
+
+class CommandFarewell : Command {
+    this() {
+        super("farewell", "Say farewell");
+        this.add(new Argument("name", "Name of person to say farewell"));
+    }
+
+    override int execute(ProgramArgs args) {
+        writefln("Bye %s!", args.arg("name"));
+        return 0;
+    }
+}
+
+int main(string[] args) {
+    auto program = new Program("test", "1.0")
+        .add(new Flag("v", null, "turns on more verbose output").name("verbose").repeating)
+        .add(new CommandGreet())
+        .add(new CommandFarewell());
+
+    return program.run(args);
+}
+```
+
+`execute` returns an `int` exit code (0 = success). `program.run` returns that exit code, so you can pass it directly to `main`.
+
+**Group commands** (commands that only contain subcommands) do not need to override `execute` — the default implementation dispatches to the matched subcommand automatically:
+
+```D
+class CommandBranch : Command {
+    this() {
+        super("branch", "Branch management");
+        this.add(new CommandBranchAdd());
+        this.add(new CommandBranchRemove());
+        // no execute() override needed
+    }
+}
+```
+
+Leaf commands that do not override `execute` throw `CommandNotImplementedException` at runtime.
+
+The two styles — callback and OOP — are independent. Callback style uses `parse()` + `.on()`; OOP style uses `run()` + `execute()`. They do not interfere with each other.
 
 ### Validation
 

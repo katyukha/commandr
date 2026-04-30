@@ -31,6 +31,7 @@ module commandr_plus.program;
 
 import commandr_plus.option;
 import commandr_plus.utils;
+import commandr_plus.args : ProgramArgs;
 import std.algorithm : all, reverse, map, filter;
 import std.ascii : isAlphaNum;
 import std.array : array;
@@ -47,6 +48,15 @@ public class InvalidProgramException : Exception {
     /// Creates new instance of InvalidProgramException
     public this(string msg) nothrow pure @safe {
         super(msg);
+    }
+}
+
+/**
+ * Thrown when a leaf Command subclass does not override execute().
+ */
+public class CommandNotImplementedException : Exception {
+    public this(string name) nothrow pure @safe {
+        super("Command '" ~ name ~ "' must override execute()");
     }
 }
 
@@ -339,6 +349,25 @@ public class Command {
             _flags.map!(f => f.abbrev),
             _options.map!(o => o.abbrev)
         ).filter!`a && a.length`.array;
+    }
+
+    /**
+     * Executes the command.
+     *
+     * Commands with subcommands automatically dispatch to the matched subcommand.
+     * Leaf commands must override this method to implement their behavior.
+     *
+     * Returns:
+     *   Exit code (0 = success).
+     *
+     * Throws:
+     *   CommandNotImplementedException if a leaf command does not override this method.
+     */
+    public int execute(ProgramArgs args) {
+        if (_commands.length > 0 && args.command !is null) {
+            return _commands[args.command.name].execute(args.command);
+        }
+        throw new CommandNotImplementedException(_name);
     }
 
     private void addBasicOptions() {
