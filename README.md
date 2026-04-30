@@ -162,7 +162,7 @@ void main(string[] args) {
           .add(new Argument("path", "Path to file to edit"))
           .parse(args);
 
-      writeln("verbosity level", a.occurencesOf("verbose"));
+      writeln("verbosity level", a.occurrencesOf("verbose"));
       writeln("arg: ", a.arg("path"));
 }
 ```
@@ -426,7 +426,7 @@ ProgramArgs args = program.parse(args);
 What         | Type     | Fetch
 -------------|----------|--------------------
 **Flag**     | bool     | `args.flag(name)`
-**Flag**     | int      | `args.occurencesOf(name)`
+**Flag**     | int      | `args.occurrencesOf(name)`
 **Option**   | string   | `args.option(name)`
 **Option**   | T        | `args.option!T(name)` / `args.option!T(name, default)`
 **Option**   | string[] | `args.options(name)`

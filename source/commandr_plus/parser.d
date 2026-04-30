@@ -350,20 +350,20 @@ unittest {
             .parseArgsNoRef(["test"]);
     assert(!a.flag("test"));
     assert(a.option("test") is null);
-    assert(a.occurencesOf("test") == 0);
+    assert(a.occurrencesOf("test") == 0);
 
     a = new Program("test")
             .add(new Flag("t", "test", ""))
             .parseArgsNoRef(["test", "-t"]);
     assert(a.flag("test"));
     assert(a.option("test") is null);
-    assert(a.occurencesOf("test") == 1);
+    assert(a.occurrencesOf("test") == 1);
 
     a = new Program("test")
             .add(new Flag("t", "test", ""))
             .parseArgsNoRef(["test", "--test"]);
     assert(a.flag("test"));
-    assert(a.occurencesOf("test") == 1);
+    assert(a.occurrencesOf("test") == 1);
 
     assertThrown!InvalidArgumentsException(
         new Program("test")
@@ -395,31 +395,31 @@ unittest {
             .add(new Option("t", "test", ""))
             .parseArgsNoRef(["test"]);
     assert(a.option("test") is null);
-    assert(a.occurencesOf("test") == 0);
+    assert(a.occurrencesOf("test") == 0);
 
     a = new Program("test")
             .add(new Option("t", "test", ""))
             .parseArgsNoRef(["test", "-t", "5"]);
     assert(a.option("test") == "5");
-    assert(a.occurencesOf("test") == 0);
+    assert(a.occurrencesOf("test") == 0);
 
     a = new Program("test")
             .add(new Option("t", "test", ""))
             .parseArgsNoRef(["test", "-t=5"]);
     assert(a.option("test") == "5");
-    assert(a.occurencesOf("test") == 0);
+    assert(a.occurrencesOf("test") == 0);
 
     a = new Program("test")
             .add(new Option("t", "test", ""))
             .parseArgsNoRef(["test", "--test", "bar"]);
     assert(a.option("test") == "bar");
-    assert(a.occurencesOf("test") == 0);
+    assert(a.occurrencesOf("test") == 0);
 
     a = new Program("test")
             .add(new Option("t", "test", ""))
             .parseArgsNoRef(["test", "--test=bar"]);
     assert(a.option("test") == "bar");
-    assert(a.occurencesOf("test") == 0);
+    assert(a.occurrencesOf("test") == 0);
 
     assertThrown!InvalidArgumentsException(
         new Program("test")
@@ -450,12 +450,12 @@ unittest {
     a = new Program("test")
             .add(new Argument("test", "").optional)
             .parseArgsNoRef(["test"]);
-    assert(a.occurencesOf("test") == 0);
+    assert(a.occurrencesOf("test") == 0);
 
     a = new Program("test")
             .add(new Argument("test", ""))
             .parseArgsNoRef(["test", "t"]);
-    assert(a.occurencesOf("test") == 0);
+    assert(a.occurrencesOf("test") == 0);
     assert(a.arg("test") == "t");
 
     assertThrown!InvalidArgumentsException(
@@ -502,14 +502,14 @@ unittest {
             .add(new Flag("t", "test", "").repeating)
             .parseArgsNoRef(["test", "--test", "-t"]);
     assert(a.flag("test"));
-    assert(a.occurencesOf("test") == 2);
+    assert(a.occurrencesOf("test") == 2);
 
     a = new Program("test")
             .add(new Option("t", "test", "").repeating)
             .parseArgsNoRef(["test", "--test=a", "-t", "k"]);
     assert(a.option("test") == "k");
     assert(a.optionAll("test") == ["a", "k"]);
-    assert(a.occurencesOf("test") == 0);
+    assert(a.occurrencesOf("test") == 0);
 }
 
 // default value

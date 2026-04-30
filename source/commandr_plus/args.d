@@ -85,7 +85,7 @@ public class ProgramArgs {
      *  true if flag has been passed at least once, false otherwise.
      *
      * See_Also:
-     *  occurencesOf
+     *  occurrencesOf
      */
     public bool hasFlag(string name) {
         return ((name in _flags) != null && _flags[name] > 0);
@@ -108,12 +108,15 @@ public class ProgramArgs {
      * See_Also:
      *  hasFlag, flag
      */
-    public int occurencesOf(string name) {
+    public int occurrencesOf(string name) {
         if (!hasFlag(name)) {
             return 0;
         }
         return _flags[name];
     }
+
+    /// Deprecated alias for occurrencesOf.
+    public alias occurencesOf = occurrencesOf;
 
     /**
      * Gets option value.
@@ -388,4 +391,17 @@ unittest {
             .parseArgsNoRef(["test"]);
     assert(a.arg!int("count") == 0);
     assert(a.arg!int("count", 5) == 5);
+}
+
+// occurrencesOf spelling
+unittest {
+    import commandr_plus.parser : parseArgsNoRef;
+    import commandr_plus.option : Flag;
+    import commandr_plus.program : Program;
+
+    auto a = new Program("test")
+            .add(new Flag("v", "verbose", "").repeating)
+            .parseArgsNoRef(["test", "-vvv"]);
+    assert(a.occurrencesOf("verbose") == 3);
+    assert(a.occurencesOf("verbose") == 3);  // old name still works
 }
