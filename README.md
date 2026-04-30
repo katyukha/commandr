@@ -382,8 +382,10 @@ What         | Type     | Fetch
 **Flag**     | bool     | `args.flag(name)`
 **Flag**     | int      | `args.occurencesOf(name)`
 **Option**   | string   | `args.option(name)`
+**Option**   | T        | `args.option!T(name)` / `args.option!T(name, default)`
 **Option**   | string[] | `args.options(name)`
 **Argument** | string   | `args.arg(name)`
+**Argument** | T        | `args.arg!T(name)` / `args.arg!T(name, default)`
 **Argument** | string[] | `args.args(name)`
 
 

@@ -144,6 +144,31 @@ public class ProgramArgs {
     }
 
     /**
+     * Gets option value converted to type T.
+     *
+     * Params:
+     *   name         - name of option to get
+     *   defaultValue - value to return when option is not set (defaults to T.init)
+     *
+     * Returns:
+     *   Option value converted to T, or defaultValue if not set.
+     *
+     * Throws:
+     *   std.conv.ConvException if the value cannot be converted to T.
+     */
+    public T option(T)(string name) if (!is(T == string)) {
+        return this.option!T(name, T.init);
+    }
+
+    /// ditto
+    public T option(T)(string name, T defaultValue) if (!is(T == string)) {
+        import std.conv : to;
+        auto val = this.option(name);
+        if (val is null) return defaultValue;
+        return val.to!T;
+    }
+
+    /**
      * Gets all option values.
      *
      * In case of non-repeating option, returns array with one value.
@@ -195,6 +220,31 @@ public class ProgramArgs {
         }
 
         return (*entryPtr)[$-1];
+    }
+
+    /**
+     * Gets argument value converted to type T.
+     *
+     * Params:
+     *   name         - name of argument to get
+     *   defaultValue - value to return when argument is not set (defaults to T.init)
+     *
+     * Returns:
+     *   Argument value converted to T, or defaultValue if not set.
+     *
+     * Throws:
+     *   std.conv.ConvException if the value cannot be converted to T.
+     */
+    public T arg(T)(string name) if (!is(T == string)) {
+        return this.arg!T(name, T.init);
+    }
+
+    /// ditto
+    public T arg(T)(string name, T defaultValue) if (!is(T == string)) {
+        import std.conv : to;
+        auto val = this.arg(name);
+        if (val is null) return defaultValue;
+        return val.to!T;
     }
 
     /**
@@ -286,4 +336,56 @@ public class ProgramArgs {
 
         return this;
     }
+}
+
+// typed option accessor
+unittest {
+    import commandr_plus.parser : parseArgsNoRef;
+    import commandr_plus.option : Option;
+    import commandr_plus.program : Program;
+    import std.conv : ConvException;
+    import std.exception : assertThrown;
+
+    ProgramArgs a;
+
+    a = new Program("test")
+            .add(new Option("t", "timeout", ""))
+            .parseArgsNoRef(["test", "--timeout", "42"]);
+    assert(a.option!int("timeout") == 42);
+    assert(a.option!long("timeout") == 42L);
+
+    // T.init when not provided
+    a = new Program("test")
+            .add(new Option("t", "timeout", ""))
+            .parseArgsNoRef(["test"]);
+    assert(a.option!int("timeout") == 0);
+    assert(a.option!int("timeout", 30) == 30);
+
+    // invalid value throws ConvException
+    a = new Program("test")
+            .add(new Option("t", "timeout", ""))
+            .parseArgsNoRef(["test", "--timeout", "notanumber"]);
+    assertThrown!ConvException(a.option!int("timeout"));
+}
+
+// typed arg accessor
+unittest {
+    import commandr_plus.parser : parseArgsNoRef;
+    import commandr_plus.option : Argument;
+    import commandr_plus.program : Program;
+
+    ProgramArgs a;
+
+    a = new Program("test")
+            .add(new Argument("count", ""))
+            .parseArgsNoRef(["test", "7"]);
+    assert(a.arg!int("count") == 7);
+    assert(a.arg!long("count") == 7L);
+
+    // T.init when not provided
+    a = new Program("test")
+            .add(new Argument("count", "").optional)
+            .parseArgsNoRef(["test"]);
+    assert(a.arg!int("count") == 0);
+    assert(a.arg!int("count", 5) == 5);
 }
